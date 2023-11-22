@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyberbullying Detection</title>
+    <style>
+       
+        body {
+            font-family: Arial, sans-serif;
+            background-color:white;
+            
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: left;
+            justify-content: center;
+        
+            height: 100vh;
+            background: radial-gradient( #36ade8,#bddee8);
+         
+            animation: backgroundAnimation 30s linear infinite;
+        }
+        @keyframes backgroundAnimation {
+            0% { background-position: 0% 0%; }
+            50% { background-position: 100% 100%; }
+            100% { background-position: 0% 0%; }
+        }
+        .container {
+            text-align: center;
+            
+            
+            padding: 20px;
+            border-radius: 50px;
+        }
+        label {
+            font-size: large;
+            display: block;
+            margin: 10px 0;
+            
+        }
+        textarea {
+            width: 450px;
+            height: 300px;
+            padding: 10px;
+            margin: 10px 0;
+            resize: none;
+        }
+        button {
+            padding: 10px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Cyberbullying Detection</h1>
+    <form id="cyberbullyingForm">
+        <label for="textInput">Enter Text:</label>
+        <textarea id="textInput" placeholder="Type your text here..."></textarea>
+        <br>
+        <button type="button" onclick="classifyText()">Classify</button>
+    </form>
+    <p id="result"></p>
+</div>
+
+<script>
+    function classifyText() {
+        var textInput = document.getElementById('textInput').value;
+
+        // Make a POST request to the Flask server for text classification
+        fetch('/classify', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ text: textInput }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Display the result
+            var resultElement = document.getElementById('result');
+            if (data.prediction == 'not_cyberbullying') {
+                resultElement.innerHTML = "This text is not cyberbullying.";
+            } else if (data.prediction == 'ethnicity') {
+                resultElement.innerHTML = "This text is cyberbullying on ethnicity.";
+            } else if (data.prediction == 'gender') {
+                resultElement.innerHTML = "This text is cyberbullying on gender.";
+            } else if (data.prediction == 'religion') {
+                resultElement.innerHTML = "This text is cyberbullying on religion.";
+            } else if (data.prediction == 'age') {
+                resultElement.innerHTML = "This text is cyberbullying on age.";
+            } else {
+                resultElement.innerHTML = "This text is cyberbullying.";
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+</script>
+
+</body>
+</html>
+
